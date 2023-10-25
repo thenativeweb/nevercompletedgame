@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ncg
+  namespace: websites
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ncg
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: ncg
+    spec:
+      containers:
+      - name: ncg
+        image: thenativeweb/ncg:latest
+        imagePullPolicy: Always
+        env:
+        - name: PORT
+          value: '3000'
+        ports:
+        - name: http
+          containerPort: 3000
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: http
+          initialDelaySeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: http
+          initialDelaySeconds: 10
+      imagePullSecrets:
+      - name: docker-hub
+      automountServiceAccountToken: false
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ncg
+  namespace: websites
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+  selector:
+    app: ncg
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ncg
+  namespace: websites
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+spec:
+  tls:
+  - hosts:
+    - api.nevercompletedgame.io
+    secretName: ncg
+  ingressClassName: nginx
+  rules:
+  - host: api.nevercompletedgame.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ncg
+            port:
+              name: http
