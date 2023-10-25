@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func GetPort(defaultPort int) (int, error) {
+func Port(defaultPort int) (int, error) {
 	portAsString := os.Getenv("PORT")
 
 	if portAsString == "" {

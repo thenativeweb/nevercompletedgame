@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	port, err := environment.GetPort(3000)
+	port, err := environment.Port(3000)
 	if err != nil {
 		panic(err)
 	}
