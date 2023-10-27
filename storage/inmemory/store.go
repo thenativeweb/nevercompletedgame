@@ -40,6 +40,7 @@ func (s *Store) Update(game *game.Game) error {
 }
 
 func (s *Store) ReadByID(gameID string) (*game.Game, error) {
+	// Variable 'game' collides with imported package name ;)
 	game, ok := s.games[gameID]
 	if !ok {
 		return nil, ErrGameNotFound

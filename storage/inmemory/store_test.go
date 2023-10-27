@@ -17,6 +17,9 @@ func TestNew(t *testing.T) {
 }
 
 func TestCreate(t *testing.T) {
+	// Imho wird hier uuid.New() auf Funktionalität getestet. Der Test kann imho nur fehlschlagen wenn uuid.New() eine
+	// ID liefert, die bereits vorhanden ist.
+	// Das liegt aber nicht im Verantwortungsbereich der App und muss damit imho auch nicht getestet werden.
 	t.Run("Returns nil if the game does not exist yet.", func(t *testing.T) {
 		store := inmemory.New()
 		g := game.Start()
@@ -25,6 +28,7 @@ func TestCreate(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
+	// Siehe oben.
 	t.Run("Returns an error if the game already exists.", func(t *testing.T) {
 		store := inmemory.New()
 		g := game.Start()
@@ -50,6 +54,9 @@ func TestCreate(t *testing.T) {
 }
 
 func TestUpdate(t *testing.T) {
+	// Wieso existiert das Game nicht? Da steht doch eindeutig game.Start()?
+	// Gemeint ist wahrscheinlich, dass das Game im Store nicht bekannt ist. Das reflektiert der Test-Name aber nicht.
+	// Um den Test zu verstehen, muss ich internes Wissen über die Funktionsweise der App besitzen. Nicht gut.
 	t.Run("Returns an error if the game does not exist.", func(t *testing.T) {
 		store := inmemory.New()
 		g := game.Start()
@@ -58,6 +65,8 @@ func TestUpdate(t *testing.T) {
 		assert.Error(t, err)
 	})
 
+	// "Updates the game." sollte wohl eher "An Update of the game should be reflected in the store." heißen.
+	// Beim ersten Lesen war mir nicht klar was der Test bezwecken soll.
 	t.Run("Updates the game.", func(t *testing.T) {
 		store := inmemory.New()
 		g := game.Start()

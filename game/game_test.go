@@ -34,7 +34,11 @@ func TestMakeGuess(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("Accepts guesses in any case.", func(t *testing.T) {
+	// Sprachliche Ungenauigkeit. "Accepts guesses in any case." bedeutet übersetzt, dass die Vermutung in jedem Fall
+	// akzeptiert wird. (Unabhängig davon, ob sie korrekt ist oder nicht.)
+	// "Accepts guess independent of case" bedeutet "Akzeptiert Vermutungen unabhängig von der Groß-/Kleinschreibung"
+	// was hier wohl eher beabsichtigt ist. ;)
+	t.Run("Accepts guess independent of case.", func(t *testing.T) {
 		answer := game.AnswerForLevel(1)
 		answerUppercase := strings.ToUpper(answer)
 		answerLowercase := strings.ToLower(answer)
@@ -59,7 +63,9 @@ func TestMakeGuess(t *testing.T) {
 		g := game.Start()
 
 		for _, answer := range game.Answers() {
-			g.MakeGuess(answer)
+			// MakeGuess liefert einen Rückgabewert. Durch den Unterstrich signalisieren wir, dass wir uns dessen
+			// bewusst sind, die Rückgabe absichtlich ignorieren und dass das kein Fehler in unserem Code ist.
+			_ = g.MakeGuess(answer)
 		}
 
 		assert.True(t, g.IsCompleted())
@@ -84,6 +90,7 @@ func TestQuestion(t *testing.T) {
 		question := g.Question()
 		assert.Equal(t, game.QuestionForLevel(1), question)
 
+		// siehe Zeile 66 - aktuell kann ich nicht beurteilen, ob das ein übersehener Bug oder kalkuliert ist
 		g.MakeGuess(game.AnswerForLevel(1))
 
 		question = g.Question()
@@ -102,6 +109,7 @@ func TestIsCompleted(t *testing.T) {
 		g := game.Start()
 
 		for _, answer := range game.Answers() {
+			// siehe Zeile 66
 			g.MakeGuess(answer)
 		}
 
